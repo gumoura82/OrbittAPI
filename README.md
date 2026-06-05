@@ -80,7 +80,7 @@ dotnet restore OrbittAPI/OrbittAPI.csproj
 dotnet run --project OrbittAPI/OrbittAPI.csproj
 
 # 4. Acesse o Swagger
-# https://localhost:55619/swagger/index.html
+https://localhost:55619/swagger/index.html
 ```
 
 ### Com SQL Server
