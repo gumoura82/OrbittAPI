@@ -59,7 +59,15 @@ public class ApiKeyMiddleware
         if (context.Request.Headers.TryGetValue("X-Api-Key", out var keyValue) &&
             !string.IsNullOrWhiteSpace(keyValue))
         {
-            var apiKey = await apiKeyRepo.GetByValueAsync(keyValue!);
+            // Normaliza o valor recebido: trim, remove aspas extras que o Swagger
+            // às vezes coloca ao copiar/colar e força lower-case para combinar
+            // com o formato gerado (Token é minúsculo).
+            var key = keyValue.ToString().Trim();
+            if (key.Length >= 2 && key.StartsWith('"') && key.EndsWith('"'))
+                key = key[1..^1];
+            key = key.ToLowerInvariant();
+
+            var apiKey = await apiKeyRepo.GetByValueAsync(key);
             if (apiKey != null && apiKey.IsActive())
             {
                 context.Items["UserId"] = apiKey.UserId;

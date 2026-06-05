@@ -58,8 +58,13 @@ public class ApiKeyRepository : IApiKeyRepository
 
     public ApiKeyRepository(OrbittDbContext db) => _db = db;
 
-    public async Task<ApiKey?> GetByValueAsync(string keyValue) =>
-        await _db.ApiKeys.Include(k => k.User).FirstOrDefaultAsync(k => k.KeyValue == keyValue);
+    public async Task<ApiKey?> GetByValueAsync(string keyValue)
+    {
+        var kv = keyValue?.Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(kv)) return null;
+        return await _db.ApiKeys.Include(k => k.User)
+            .FirstOrDefaultAsync(k => k.KeyValue.ToLower() == kv);
+    }
 
     public async Task<IEnumerable<ApiKey>> GetByUserIdAsync(Guid userId) =>
         await _db.ApiKeys.Where(k => k.UserId == userId).ToListAsync();
