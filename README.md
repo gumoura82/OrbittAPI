@@ -8,8 +8,6 @@ A **OrbittAPI** é uma API REST em .NET 8 que democratiza o acesso à inteligên
 
 A plataforma agrega dados simulados de fontes como **NASA, ESA e INPE**, processa métricas prontas para uso e as entrega via API com modelo de assinatura (Free → Startup → Business → Enterprise).
 
----
-
 ## 👥 Integrantes
 
 | Nome Completo | RM |
@@ -18,8 +16,6 @@ A plataforma agrega dados simulados de fontes como **NASA, ESA e INPE**, process
 | Leonardo Pasquini Baldaia | RM557416 |
 | Gustavo Oliveira de Moura | RM555827 |
 | Lynn Bueno Rosa | RM551102 |
-
----
 
 ## 🌍 Motivação e Conexão com o Tema Espacial / ODS
 
@@ -33,8 +29,6 @@ A **OrbittAPI** resolve esse problema sendo uma camada de abstração: o cliente
 - 🏙️ **ODS 11** — Cidades sustentáveis: análise de expansão urbana
 - 🌡️ **ODS 13** — Ação climática: previsão de riscos de alagamento e desmatamento
 
----
-
 ## 🛠️ Tecnologias Utilizadas
 
 | Tecnologia | Uso |
@@ -45,8 +39,6 @@ A **OrbittAPI** resolve esse problema sendo uma camada de abstração: o cliente
 | **JWT Bearer** | Autenticação de usuários |
 | **BCrypt.Net** | Hash de senhas |
 | **Swashbuckle (Swagger)** | Documentação interativa da API |
-
----
 
 ## 🗂️ Estrutura de Pastas
 
@@ -67,8 +59,6 @@ OrbittAPI/
 ├── Exceptions/           # Exceções de domínio customizadas
 └── Program.cs            # Entry point e configuração de DI
 ```
-
----
 
 ## 🏃 Instruções de Execução
 
@@ -139,8 +129,6 @@ Header: X-Api-Key: orbitt_xxxxx
 ```
 
 > 💡 **Dica**: o arquivo `OrbittAPI.http` na raiz do projeto contém todos os endpoints prontos pra rodar no Visual Studio 2022+ (suporte nativo) ou VS Code com a extensão REST Client. Captura a API Key e o JWT automaticamente entre as chamadas.
-
----
 
 ## 📊 Diagrama de Classes
 
@@ -261,8 +249,6 @@ classDiagram
     ISatelliteDataService ..> SatelliteDataResult
 ```
 
----
-
 ## 🔗 Endpoints Disponíveis
 
 | Método | Rota | Auth | Descrição | US |
@@ -282,8 +268,6 @@ classDiagram
 | GET | `/api/plans` | ❌ | Planos disponíveis | US-15 |
 | POST | `/api/plans/upgrade` | ✅ | Upgrade de plano | US-16 |
 | GET | `/health` | ❌ | Health check | — |
-
----
 
 ## ✅ Requisitos Técnicos Atendidos
 
