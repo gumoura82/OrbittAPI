@@ -1,0 +1,150 @@
+### OrbittAPI — Roteiro de testes end-to-end
+### Use no Visual Studio 2022+ (suporte nativo a .http) ou no VS Code com extensão REST Client.
+### Execute as requisições na ordem (1 → 14): a API Key e o JWT são capturados automaticamente
+### nas variáveis @apiKey e @jwt e reutilizados nas chamadas seguintes.
+
+@host = http://localhost:5000
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 1. Health check (rota pública, sem autenticação)
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/health
+Accept: application/json
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 2. Listar planos disponíveis (rota pública)
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/plans
+Accept: application/json
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 3. US-01 — Cadastro de novo desenvolvedor (gera API Key automaticamente)
+### ─────────────────────────────────────────────────────────────────────────────
+# @name register
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Lynn Bueno Rosa",
+  "email": "lynn@orbitt.dev",
+  "password": "OrbittSenha2026!"
+}
+
+### Captura a API Key da resposta acima
+@apiKey = {{register.response.body.apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 4. US-02 — Login JWT (mesmo email/senha)
+### ─────────────────────────────────────────────────────────────────────────────
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "lynn@orbitt.dev",
+  "password": "OrbittSenha2026!"
+}
+
+### Captura o JWT da resposta
+@jwt = {{login.response.body.token}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 5. US-05 — Uso do solo (autenticação por API Key)
+### Coordenada: São Paulo, SP
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/satellite/landuse?lat=-23.5505&lng=-46.6333
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 6. US-06 — NDVI (vegetação) com autenticação por JWT
+### Coordenada: Floresta Amazônica próximo a Manaus
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/satellite/vegetation?lat=-3.1190&lng=-60.0217
+Authorization: Bearer {{jwt}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 7. US-07 — Risco de alagamento (API Key)
+### Coordenada: Petrópolis, RJ (região historicamente afetada)
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/satellite/flood-risk?lat=-22.5050&lng=-43.1786
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 8. US-08 — Desmatamento com janela temporal (API Key)
+### Coordenada: Rondônia (arco do desmatamento)
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/satellite/deforestation?lat=-10.0000&lng=-62.0000&from=2025-01-01&to=2026-01-01
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 9. US-09 — Expansão urbana (API Key)
+### Coordenada: Brasília, DF
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/satellite/urban-growth?lat=-15.7975&lng=-47.8919
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 10. US-11 — Dashboard de consumo (mostra que as chamadas 5-9 foram registradas)
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/dashboard/usage
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 11. US-12 — Mapa das últimas consultas (com timestamps em BRT)
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/dashboard/map
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 12. US-13 — Exportar histórico em CSV
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/dashboard/export/csv
+X-Api-Key: {{apiKey}}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 13. ─── TESTES DE ERRO (evidência de tratamento de exceções) ───
+### 13a. Coordenadas inválidas → 400 InvalidCoordinatesException
+### ─────────────────────────────────────────────────────────────────────────────
+GET {{host}}/api/satellite/vegetation?lat=200&lng=-46.6333
+X-Api-Key: {{apiKey}}
+
+### 13b. API Key inválida → 401 Unauthorized (middleware)
+GET {{host}}/api/satellite/vegetation?lat=-23.5&lng=-46.6
+X-Api-Key: chave_falsa_que_nao_existe
+
+### 13c. Sem nenhuma autenticação → 401 Unauthorized
+GET {{host}}/api/satellite/vegetation?lat=-23.5&lng=-46.6
+
+### 13d. E-mail duplicado → 400 BusinessException (tratado no middleware)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Outra Pessoa",
+  "email": "lynn@orbitt.dev",
+  "password": "OutraSenha123!"
+}
+
+### 13e. Login com senha errada → 401 UnauthorizedException
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "lynn@orbitt.dev",
+  "password": "senha_errada"
+}
+
+### ─────────────────────────────────────────────────────────────────────────────
+### 14. US-16 — Upgrade de plano (Free → Startup)
+### ─────────────────────────────────────────────────────────────────────────────
+POST {{host}}/api/plans/upgrade
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "newPlan": 1
+}
+
+### 15. Confirma o upgrade no dashboard
+GET {{host}}/api/dashboard/usage
+X-Api-Key: {{apiKey}}

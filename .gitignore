@@ -1,0 +1,14 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.swp
+
+## Environment
+appsettings.Production.json
+.env
+
+## Build output
+publish/
