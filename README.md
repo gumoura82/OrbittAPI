@@ -70,7 +70,7 @@ OrbittAPI/
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/OrbittAPI.git
+git clone https://github.com/gumoura82/OrbittAPI.git
 cd OrbittAPI
 
 # 2. Restore de pacotes
@@ -80,7 +80,7 @@ dotnet restore OrbittAPI/OrbittAPI.csproj
 dotnet run --project OrbittAPI/OrbittAPI.csproj
 
 # 4. Acesse o Swagger
-# http://localhost:5000/swagger
+# https://localhost:55619/swagger/index.html
 ```
 
 ### Com SQL Server
