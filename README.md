@@ -309,13 +309,13 @@ O middleware tenta primeiro o JWT (se presente), depois a API Key. Falha em ambo
 ![Cadastro](imagem1c.png)
 
 ### 2. Autenticação inválida — 401 Problem Details
-![401](imagem2c.png)
+![401](imagem4c.png)
 
 ### 3. GET /api/satellite/vegetation — 200
 ![Vegetation](imagem3c.png)
 
 ### 4. GET /api/satellite/flood-risk — 200
-![Flood Risk](imagem4c.png)
+![Flood Risk](imagem2c.png)
 
 ### 5. GET /api/dashboard/usage — 200
 ![Dashboard](imagem5c.png)
