@@ -302,3 +302,20 @@ A API implementa **dois métodos de autenticação** que coexistem no mesmo midd
 - **JWT Bearer** (`Authorization: Bearer ...`) — emitido pelo login via BCrypt + assinatura HMAC-SHA256, expiração de 24h
 
 O middleware tenta primeiro o JWT (se presente), depois a API Key. Falha em ambos retorna 401 com Problem Details.
+
+## 📸 Evidências de Execução
+
+### 1. Cadastro — POST /api/auth/register (201)
+![Cadastro](imagem1c.png)
+
+### 2. Autenticação inválida — 401 Problem Details
+![401](imagem2c.png)
+
+### 3. GET /api/satellite/vegetation — 200
+![Vegetation](imagem3c.png)
+
+### 4. GET /api/satellite/flood-risk — 200
+![Flood Risk](imagem4c.png)
+
+### 5. GET /api/dashboard/usage — 200
+![Dashboard](imagem5c.png)
